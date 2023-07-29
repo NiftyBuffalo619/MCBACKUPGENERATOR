@@ -5,7 +5,7 @@ namespace MCBACKUPGENERATOR
 {
     class Program
     {
-        MinecraftServer SELECTED_SERVER = null;
+        public static MinecraftServer SELECTED_SERVER = null;
         static void ChooseOptionForBackup(Toplevel top)
         {
             var MenuWindow = new Window("Choose Backup")
@@ -17,12 +17,25 @@ namespace MCBACKUPGENERATOR
             };
             top.Add(MenuWindow);
 
-            var option1Button = new Button("Option 1")
+            int i = 0;
+            foreach (MinecraftServer server in MinecraftServer.ServerList)
             {
-                X = Pos.Center(),
-                Y = Pos.Percent(40),
-            };
-            MenuWindow.Add(option1Button);
+                i++;
+                var button = new Button(server.Name)
+                {
+                    X = Pos.Center(),
+                    Y = 2 + i,
+                };
+
+                button.Clicked += () =>
+                {
+                    SELECTED_SERVER = server;
+                    MessageBox.Query("Info", "You have choosen " + server.Name, "OK");
+                    top.Remove(MenuWindow);
+                    Application.RequestStop();
+                };
+                MenuWindow.Add(button);
+            }
 
             var option2Button = new Button("Cancel")
             {
@@ -30,12 +43,6 @@ namespace MCBACKUPGENERATOR
                 Y = Pos.Percent(60),
             };
             MenuWindow.Add(option2Button);
-
-            option1Button.Clicked += () =>
-            {
-                MessageBox.Query("Option 1", "You clicked Option 1!", "OK");
-                top.Remove(MenuWindow);
-            };
 
             option2Button.Clicked += () =>
             {
@@ -86,6 +93,7 @@ namespace MCBACKUPGENERATOR
             });
             statusBar.Frame = new Rect(0, 0, top.Frame.Width, 1);
             top.Add(statusBar);*/
+
             var label = new Label("Welcome to backup generator!")
             {
                 X = Pos.Center(),
@@ -99,6 +107,16 @@ namespace MCBACKUPGENERATOR
             button.Clicked += () => {
                 ChooseOptionForBackup(top);
             };
+            var second_label = new Label("Backup not Selected yet")
+            {
+                X = 0,
+                Y = 0,
+            };
+            window.Add(second_label);
+            if (SELECTED_SERVER != null)
+            {
+                second_label.Text = SELECTED_SERVER.Name;
+            }
             window.Add(button);
             window.Add(label);
             Application.Run();
