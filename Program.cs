@@ -32,6 +32,7 @@ namespace MCBACKUPGENERATOR
                     SELECTED_SERVER = server;
                     MessageBox.Query("Info", "You have choosen " + server.Name, "OK");
                     top.Remove(MenuWindow);
+                    selectedLabel.Text = "Choosen Server: " + server.Name;
                     Application.RequestStop();
                 };
                 MenuWindow.Add(button);
@@ -52,6 +53,13 @@ namespace MCBACKUPGENERATOR
             };
             Application.Run(MenuWindow);
         }
+
+
+        public static Label selectedLabel = new Label("Backup not selected yet")
+        {
+            X = 0,
+            Y = 0,
+        };
         static void Main(string[] args)
         {
             Config.LoadConfig();
@@ -72,7 +80,7 @@ namespace MCBACKUPGENERATOR
             {
                 new MenuBarItem("_File", new MenuItem[]
                 {
-                    new MenuItem("_Load Config" , "" , () =>
+                    new MenuItem("_Reload Config" , "" , () =>
                     {
 
                     }),
@@ -93,13 +101,12 @@ namespace MCBACKUPGENERATOR
             });
             statusBar.Frame = new Rect(0, 0, top.Frame.Width, 1);
             top.Add(statusBar);*/
-
             var label = new Label("Welcome to backup generator!")
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),
             };
-            var button = new Button("Button")
+            var button = new Button("Choose a backup")
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(label) + 1,
@@ -107,15 +114,26 @@ namespace MCBACKUPGENERATOR
             button.Clicked += () => {
                 ChooseOptionForBackup(top);
             };
-            var second_label = new Label("Backup not Selected yet")
+            var MakeBackupButton = new Button("Make Backup")
             {
-                X = 0,
-                Y = 0,
+                X = Pos.Center(),
+                Y = Pos.Bottom(label) + 2,
             };
-            window.Add(second_label);
+            MakeBackupButton.Clicked += () =>
+            {
+                if (SELECTED_SERVER == null)
+                {
+                    MessageBox.ErrorQuery("Error", "No Backup selected", "OK");
+                    return;
+                }
+
+                MessageBox.Query("Info", "Backup successfully made!", "OK");
+            };
+            window.Add(MakeBackupButton);
+            window.Add(selectedLabel);
             if (SELECTED_SERVER != null)
             {
-                second_label.Text = SELECTED_SERVER.Name;
+                selectedLabel.Text = SELECTED_SERVER.Name;
             }
             window.Add(button);
             window.Add(label);
