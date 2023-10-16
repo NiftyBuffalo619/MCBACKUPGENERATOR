@@ -33,6 +33,7 @@ namespace MCBACKUPGENERATOR
                     MessageBox.Query("Info", "You have choosen " + server.Name, "OK");
                     top.Remove(MenuWindow);
                     selectedLabel.Text = "Choosen Server: " + server.Name;
+                    selectedLabelPath.Text = "Path: " + server.Path;
                     Application.RequestStop();
                 };
                 MenuWindow.Add(button);
@@ -60,9 +61,15 @@ namespace MCBACKUPGENERATOR
             X = 0,
             Y = 0,
         };
+        public static Label selectedLabelPath = new Label("")
+        {
+            X = 0,
+            Y = 1,
+        };
         static void Main(string[] args)
         {
-            Config.LoadConfig();
+            //Config.LoadConfig();
+            Config.LoadConfigJson();
             // DEBUG ONLY MinecraftServer.LoopList();
             Console.Title = "BackupGenerator " + Reference.Version;
             Application.Init();
@@ -82,7 +89,7 @@ namespace MCBACKUPGENERATOR
                 {
                     new MenuItem("_Reload Config" , "" , () =>
                     {
-
+                       //Config.ReloadConfig();
                     }),
                     new MenuItem("_Quit", "" , () =>
                     {
@@ -131,6 +138,7 @@ namespace MCBACKUPGENERATOR
             };
             window.Add(MakeBackupButton);
             window.Add(selectedLabel);
+            window.Add(selectedLabelPath);
             if (SELECTED_SERVER != null)
             {
                 selectedLabel.Text = SELECTED_SERVER.Name;
