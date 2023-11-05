@@ -1,14 +1,17 @@
 [
     {
         "Name": "FNAF Minecraft Server",
-        "Path": "Custom Path here"
+        "Path": "Custom Path here",
+        "Service":  "Minecraft"
     },
     {
         "Name": "Decocraftworld",
-        "Path": "Custom Path here"
+        "Path": "Custom Path here",
+        "Service":  "Minecraft"
     },
     {
         "Name": "Another MC Server",
-        "Path": "Custom Path here"
+        "Path": "Custom Path here",
+        "Service":  "Minecraft"
     }
 ]

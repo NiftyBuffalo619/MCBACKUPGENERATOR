@@ -29,7 +29,7 @@ namespace MCBACKUPGENERATOR
                         string[] hodnoty = radek.Split(';');
                         string name = hodnoty[0];
                         string path = hodnoty[1];
-                        MinecraftServer server = new MinecraftServer(name, path);
+                        Server server = new Server(name, path, "");
                     }
                 }
                 catch (Exception e)
@@ -53,7 +53,7 @@ namespace MCBACKUPGENERATOR
             {
                 try
                 {
-                    MinecraftServer.ServerList.Clear();
+                    Server.ServerList.Clear();
                     reader = new StreamReader("config.txt");
                     string radek = "";
                     while ((radek = reader.ReadLine()) != null)
@@ -66,7 +66,7 @@ namespace MCBACKUPGENERATOR
                         string[] hodnoty = radek.Split(';');
                         string name = hodnoty[0];
                         string path = hodnoty[1];
-                        MinecraftServer server = new MinecraftServer(name, path);
+                        Server server = new Server(name, path, "");
                     }
                 }
                 catch (Exception e)
@@ -88,35 +88,37 @@ namespace MCBACKUPGENERATOR
             if (File.Exists("config.json"))
             {
                 string json = File.ReadAllText("config.json");
-                MinecraftServer.ServerList = JsonConvert.DeserializeObject<List<MinecraftServer>>(json);
+                Server.ServerList = JsonConvert.DeserializeObject<List<Server>>(json);
             }
         }
         public static void ReloadConfigJson()
         {
             if (File.Exists("config.json"))
             {
-                MinecraftServer.ServerList.Clear();
+                Server.ServerList.Clear();
                 string json = File.ReadAllText("config.json");
-                MinecraftServer.ServerList = JsonConvert.DeserializeObject<List<MinecraftServer>>(json);
+                Server.ServerList = JsonConvert.DeserializeObject<List<Server>>(json);
             }
         }
     }
-    class MinecraftServer
+    class Server
     {
-        public static List<MinecraftServer> ServerList = new List<MinecraftServer>();
+        public static List<Server> ServerList = new List<Server>();
         public string Name { get; set; }
         public string Path { get; set; }
+        public string Service { get; private set; }
 
-        public MinecraftServer(string name , string path, string description = "")
+        public Server(string name , string path, string service, string description = "")
         {
             this.Name = name;
             this.Path = path;
+            this.Service = service;
             ServerList.Add(this);
         }
 
         public static void LoopList() // DEBUG ONLY 
         {
-            foreach (MinecraftServer server in ServerList)
+            foreach (Server server in ServerList)
             {
                // DEBUG ONLY Console.WriteLine("Writing " + server.Name + " " + server.Path);
             }

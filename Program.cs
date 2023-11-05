@@ -5,7 +5,7 @@ namespace MCBACKUPGENERATOR
 {
     class Program
     {
-        public static MinecraftServer SELECTED_SERVER = null;
+        public static Server SELECTED_SERVER = null;
         static void ChooseOptionForBackup(Toplevel top)
         {
             var MenuWindow = new Window("Choose Backup")
@@ -18,7 +18,7 @@ namespace MCBACKUPGENERATOR
             top.Add(MenuWindow);
 
             int i = 0;
-            foreach (MinecraftServer server in MinecraftServer.ServerList)
+            foreach (Server server in Server.ServerList)
             {
                 i++;
                 var button = new Button(server.Name)
@@ -34,6 +34,7 @@ namespace MCBACKUPGENERATOR
                     top.Remove(MenuWindow);
                     selectedLabel.Text = "Choosen Server: " + server.Name;
                     selectedLabelPath.Text = "Path: " + server.Path;
+                    selectedLabelService.Text = "Service: " + server.Service;
                     Application.RequestStop();
                 };
                 MenuWindow.Add(button);
@@ -66,6 +67,11 @@ namespace MCBACKUPGENERATOR
             X = 0,
             Y = 1,
         };
+        public static Label selectedLabelService = new Label("")
+        {
+            X = 0,
+            Y = 2,
+        };
         static void Main(string[] args)
         {
             //Config.LoadConfig();
@@ -74,14 +80,37 @@ namespace MCBACKUPGENERATOR
             Console.Title = "BackupGenerator " + Reference.Version;
             Application.Init();
             var top = Application.Top;
-            var window = new Window("Terminal")
+            var mainWindow = new Toplevel()
             {
                 X = 0,
                 Y = 0,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
             };
-            top.Add(window);
+            top.Add(mainWindow);
+            var window = new Window("Terminal")
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Percent(60),
+                Height = Dim.Fill(),
+            };
+            var status_window = new Window("Status")
+            {
+                X = Pos.Right(window),
+                Y = 0,
+                Width = Dim.Percent(40),
+                Height = Dim.Percent(40),
+            };
+            var log_window = new Window("Logs")
+            {
+                X = Pos.Right(window),
+                Y = Pos.Bottom(status_window),
+                Width = Dim.Percent(40),
+                Height = Dim.Fill(),
+            };
+            mainWindow.Add(window, status_window, log_window);
+            //top.Add(window);
 
             var menu = new MenuBar(new MenuBarItem[]
             {
@@ -135,10 +164,16 @@ namespace MCBACKUPGENERATOR
                 }
 
                 MessageBox.Query("Info", "Backup successfully made!", "OK");
+                var loglabel = new Label("Backup successfully made!")
+                {
+
+                };
+                log_window.Add(loglabel);
             };
             window.Add(MakeBackupButton);
             window.Add(selectedLabel);
             window.Add(selectedLabelPath);
+            window.Add(selectedLabelService);
             if (SELECTED_SERVER != null)
             {
                 selectedLabel.Text = SELECTED_SERVER.Name;
