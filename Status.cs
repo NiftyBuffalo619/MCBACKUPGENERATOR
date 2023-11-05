@@ -12,5 +12,9 @@ namespace MCBACKUPGENERATOR
         {
 
         }
+        public static void GetFiveMServerStatus()
+        {
+
+        }
     }
 }

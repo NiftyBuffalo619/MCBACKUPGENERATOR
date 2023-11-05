@@ -6,7 +6,7 @@ namespace MCBACKUPGENERATOR
     class Program
     {
         public static Server SELECTED_SERVER = null;
-        static void ChooseOptionForBackup(Toplevel top)
+        static void ChooseOptionForBackup(Toplevel top, Window files_window)
         {
             var MenuWindow = new Window("Choose Backup")
             {
@@ -35,6 +35,8 @@ namespace MCBACKUPGENERATOR
                     selectedLabel.Text = "Choosen Server: " + server.Name;
                     selectedLabelPath.Text = "Path: " + server.Path;
                     selectedLabelService.Text = "Service: " + server.Service;
+                    files_window.Title = server.Path;
+                    Files.WriteAllFilesFromDirectory(server.Path, files_window);
                     Application.RequestStop();
                 };
                 MenuWindow.Add(button);
@@ -93,6 +95,13 @@ namespace MCBACKUPGENERATOR
                 X = 0,
                 Y = 0,
                 Width = Dim.Percent(60),
+                Height = Dim.Percent(40),
+            };
+            var files_window = new Window("Files")
+            {
+                X = 0,
+                Y = Pos.Bottom(window),
+                Width = Dim.Percent(60),
                 Height = Dim.Fill(),
             };
             var status_window = new Window("Status")
@@ -109,7 +118,7 @@ namespace MCBACKUPGENERATOR
                 Width = Dim.Percent(40),
                 Height = Dim.Fill(),
             };
-            mainWindow.Add(window, status_window, log_window);
+            mainWindow.Add(window, files_window, status_window, log_window);
             //top.Add(window);
 
             var menu = new MenuBar(new MenuBarItem[]
@@ -148,13 +157,14 @@ namespace MCBACKUPGENERATOR
                 Y = Pos.Bottom(label) + 1,
             };
             button.Clicked += () => {
-                ChooseOptionForBackup(top);
+                ChooseOptionForBackup(top, files_window);
             };
             var MakeBackupButton = new Button("Make Backup")
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(label) + 2,
             };
+            int i = 0;
             MakeBackupButton.Clicked += () =>
             {
                 if (SELECTED_SERVER == null)
@@ -166,9 +176,10 @@ namespace MCBACKUPGENERATOR
                 MessageBox.Query("Info", "Backup successfully made!", "OK");
                 var loglabel = new Label("Backup successfully made!")
                 {
-
+                    Y = i,
                 };
                 log_window.Add(loglabel);
+                i++;
             };
             window.Add(MakeBackupButton);
             window.Add(selectedLabel);
